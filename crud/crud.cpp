@@ -34,48 +34,77 @@ struct Pet{
     }
 };
 
-
+template<typename T>
 struct Repositorio{
-    map<string, Pessoa> pessoas;
+    map<string, T> data;
 
-    void add(string chave, Pessoa pessoa){
-        if(exists)
+    bool exists(string key){
+        return data.find(key) != data.end();
+    }
+    void add(string key, T element){
+        if(exists(key))
             throw "chave duplicadas";
-        pessoas.insert(pair<string, Pessoa>(chave, Pessoa(pessoa.name, pessoa.age)));
-    }
-    bool exists(string chave){
-        return pessoas.find(chave) != pessoas.end();
-    }
-    Pessoa& get(string chave, Pessoa pessoa){
-        auto it = pessoas.find(chave);
-        if(it == pessoas.end())
+        // data[key] = element;
+        data.insert(pair<string, T>(key, T(element.name, element .age)));
+    }  
+    T& get(string key, T element){
+        auto it = data.find(key);
+        if(it == data.end())
             throw "chave inexistente";
         return it->second;
     }
-    void rm(string chave){ 
-        if(!exists(chave))
+    void rm(string key){ 
+        if(!exists(key))
             throw "chave inesxistente";
-        pessoas.erase(chave);
+        data.erase(key);
     }
-    vector<Pessoa> getAll();
+    vector<T> getValues(){
+        vector<T> vetorE;
+        for(auto& par : data)
+            vetorE.push_back(par.second);
+        return vetorE;
+    }
+    vector<string> getKeys(){
+        vector<string> vetork;
+        for(auto& par : data)
+            vetork.push_back(par.first);
+        return vetork;
+    }
 };
 
 
 int main(){
-    map<string, Pessoa> rep;
-    rep["gui"] = Pessoa("Guilherme Willian", 10);
-    rep["samu"] = Pessoa("Samuel Aquino", 9);
-    rep.insert(pair<string, Pessoa>("merda", Pessoa("francisco", 20)));
+    
+    /* Testando */
+    Repositorio<Pessoa> rpes;
+    Repositorio<Pet> rpet;
 
-    cout << rep["gui"].name << endl;
+    try{
+    rpes.add("gui", Pessoa("Guilherme Willian", 10)); 
+    rpes.add("gui", Pessoa("Guilherme Saraiva", 10));
+    }catch(const char * value){
+        cout << value << endl;
+    }
+    rpes.add("samu", Pessoa("Samuel de Aquino", 20));
+    rpes.add("ian", Pessoa("Ian Torres", 30));    
 
-    for(pair<string, Pessoa> par : rep){
-        cout << "key: " << par.first << " valor: " << par.second.toString() << endl;
+    for(auto& pessoa : rpes.getValues()){
+        cout << pessoa.toString() << endl;
     }
-    rep.erase("gui");
-    cout << "-----------------------" << endl;
-    for(pair<string, Pessoa> par : rep){
-        cout << "key: " << par.first << " valor: " << par.second.toString() << endl;
+
+    rpes.rm("samu");
+
+    for(auto& pessoa : rpes.getValues()){
+        cout << pessoa.toString() << endl;
     }
+
+    try{
+        rpes.rm("bu");
+    }catch(const char* value){
+        cout << value << endl;
+    }
+
+    /*----------------------------*/
+    
     return 0;
 }
