@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <algorithm>
 using namespace std;
 
 struct Pessoa{
@@ -35,11 +36,27 @@ struct Pet{
 
 
 struct Repositorio{
-    vector<Pessoa> pessoas;
+    map<string, Pessoa> pessoas;
 
-    void add(Pessoa pessoa); 
-    Pessoa& get(string chave, Pessoa pessoa);
-    void rm(string chave);
+    void add(string chave, Pessoa pessoa){
+        if(exists)
+            throw "chave duplicadas";
+        pessoas.insert(pair<string, Pessoa>(chave, Pessoa(pessoa.name, pessoa.age)));
+    }
+    bool exists(string chave){
+        return pessoas.find(chave) != pessoas.end();
+    }
+    Pessoa& get(string chave, Pessoa pessoa){
+        auto it = pessoas.find(chave);
+        if(it == pessoas.end())
+            throw "chave inexistente";
+        return it->second;
+    }
+    void rm(string chave){ 
+        if(!exists(chave))
+            throw "chave inesxistente";
+        pessoas.erase(chave);
+    }
     vector<Pessoa> getAll();
 };
 
