@@ -163,10 +163,12 @@ public:
             if((clients[i].getId()) == id)
                 clients.erase(clients.begin() + i);
             }
-        for(i = 0;i < transactions.size();i++){
-            if((transactions[i].getName()) == id)
-                transactions.erase(transactions.begin() + i);
-        }
+        for(auto it = transactions.begin();it != transactions.end();){
+            if((it->getName() == id)
+                it = transactions.erase(it);
+            else
+                it++;
+        }   
     }
     
 };
